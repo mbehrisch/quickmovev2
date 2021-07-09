@@ -24,6 +24,7 @@
   },
   "homepage": "https://github.com/mbehrisch/quickmovev2#readme",
   "devDependencies": {
+    "@semantic-release/changelog": "^5.0.1",
     "jest": "^27.0.6",
     "semantic-release": "^17.4.4"
   }

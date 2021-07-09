@@ -1,0 +1,30 @@
+{
+  "name": "quickmovev2",
+  "version": "0.0.0-development",
+  "description": "Thunderbird Extension (>TB90) to move emails via keyboard",
+  "main": "none",
+  "scripts": {
+    "test": "jest",
+    "semantic-release": "semantic-release"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mbehrisch/quickmovev2.git"
+  },
+  "keywords": [
+    "Thunderbird",
+    "QuickMove",
+    "Keyboard",
+    "Extension"
+  ],
+  "author": "Michael Behrisch",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mbehrisch/quickmovev2/issues"
+  },
+  "homepage": "https://github.com/mbehrisch/quickmovev2#readme",
+  "devDependencies": {
+    "jest": "^27.0.6",
+    "semantic-release": "^17.4.4"
+  }
+}

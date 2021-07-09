@@ -1,0 +1,69 @@
+{
+  "manifest_version": 2,
+  "name": "__MSG_extensionName__",
+  "description": "__MSG_extensionDescription__",
+  "version": "2.0.0",
+  "default_locale": "en",
+  "author": "Michael Behrisch",
+  "applications": {
+    "gecko": {
+      "id": "quickmove@addon.org",
+      "strict_min_version": "78.0"
+    }
+  },
+  "icons": {
+    "32": "icon.png"
+  },
+  "background": {
+    "scripts": ["background.js"]
+  },
+  "permissions": ["accountsRead", "accountsFolders", "messagesRead", "messagesMove"],
+  "experiment_apis": {
+    "quickmove": {
+      "schema": "api/schema.json",
+      "parent": {
+        "scopes": [          
+          "addon_parent"        
+        ],
+        "script": "api/quickmoveapi.js",
+        "events": [
+          "startup"
+        ],
+        "paths": [
+          [
+            "quickmove"
+          ]
+        ]
+      }
+    }
+  },
+  "commands": {
+    "move-feature": {
+      "suggested_key": {
+        "default": "Ctrl+Space",
+        "linux": "Ctrl+Space",
+        "mac": "Ctrl+Space",
+        "windows": "Ctrl+Space"
+      },
+      "description": "Open message-to-folder 'move' dialog"
+    },
+    "copy-feature": {
+      "suggested_key": {
+        "default": "Ctrl+Alt+Space",
+        "linux": "Ctrl+Alt+Space",
+        "mac": "Ctrl+Alt+Space",
+        "windows": "Ctrl+Alt+Space"
+      },
+      "description": "Open message-to-folder 'copy' dialog"
+    },
+    "goto-feature": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+Space",
+        "linux": "Ctrl+Shift+Space",
+        "mac": "Ctrl+Shift+Space",
+        "windows": "Ctrl+Shift+Space"
+      },
+      "description": "Jump to folder dialog"
+    }
+  }
+}

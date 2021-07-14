@@ -277,24 +277,58 @@
 //   }
 // };
 
-let { MultiSuffixTree } = ChromeUtils.import(
-  "resource:///modules/gloda/SuffixTree.jsm"
-);
+// let { MultiSuffixTree } = ChromeUtils.import(
+//   "resource:///modules/gloda/SuffixTree.jsm"
+// );
+
+// SetupMailFolders = require("./application/use_cases/SetupMailFolders");
+// InMemoryMailFolderReposity = require("./frameworks/persistance/InMemory/InMemoryMailFolderRepository");
+
+// var { ExtensionParent } = ChromeUtils.import(
+//   "resource://gre/modules/ExtensionParent.jsm"
+// );
+// var extension = ExtensionParent.GlobalManager.getExtension(
+//   "quickmovev2@behrisch.info"
+// );
+// var { myModule } = ChromeUtils.import(
+//   extension.rootURI.resolve("myModule.jsm")
+// );
+
+// // Import any needed modules.
+// var { Services } = ChromeUtils.import("resource://gre/modules/Services.jsm");
+// Services.scriptloader.loadSubScript(
+//   extension.rootURI + "/application/use_cases/SetupMailFolders.js",
+//   this,
+//   "UTF-8"
+// );
+
+// export default {
+
+// }
+import InMemoryMailFolderRepository from "./frameworks/persistance/InMemory/InMemoryMailFolderRepository";
+import SetupMailFolders from "./application/use_cases/SetupMailFolders";
 
 var quickmove = class extends ExtensionCommon.ExtensionAPI {
   getAPI(context) {
     return {
       quickmove: {
         async sayHello(name) {
+          // myModule.incValue();
           Services.wm
             .getMostRecentWindow("mail:3pane")
-            .alert("Hello " + name + "!");
+            .alert(
+              "Hello " +
+                name +
+                "! I counted <" +
+                myModule.getValue() +
+                "> clicks so far."
+            );
         },
 
         async setupMultiSuffixTree(allNames, allFolders) {
-          console.log("setupMultiSuffixTree", allNames, allFolders);
-          var _myThis = this;
-          console.log(_myThis);
+          // console.log("setupMultiSuffixTree", allNames, allFolders);
+          // var _myThis = this;
+          // console.log(_myThis);
           // this.suffixTree = new MultiSuffixTree(allNames, allFolders);
           // console.log(this.suffixTree.findMatches("tufts"));
         },
@@ -304,10 +338,24 @@ var quickmove = class extends ExtensionCommon.ExtensionAPI {
 
   onStartup() {
     console.log("API onStartup");
+
+    this.mailFolderRepository = new InMemoryMailFolderReposity();
+    const SetupMailFolders = SetupMailFolders(this.mailFolderRepository);
+
+    SetupMailFolders.Execute().then(
+      (response) => {
+        console.log("setup mail folders done", response);
+      },
+      (err) => {
+        next(err);
+      }
+    );
   }
 
   onShutdown(isAppShutdown) {
     console.log("API onShutdown");
+
+    // this.mailFolderRepository.deleteAll();
     if (isAppShutdown) {
       return;
     }

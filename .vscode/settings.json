@@ -1,0 +1,4 @@
+{
+    "jest.jestCommandLine": "jest --verbose",
+    "jest.autoRun": {"watch": true, "onStartup": ["all-tests"]}
+}

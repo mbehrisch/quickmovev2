@@ -7,7 +7,7 @@
   "author": "Michael Behrisch",
   "applications": {
     "gecko": {
-      "id": "quickmove@addon.org",
+      "id": "quickmovev2@behrisch.info",
       "strict_min_version": "78.0"
     }
   },
@@ -25,7 +25,7 @@
         "scopes": [          
           "addon_parent"        
         ],
-        "script": "api/quickmoveapi.js",
+        "script": "addon/api/index.js",
         "events": [
           "startup"
         ],

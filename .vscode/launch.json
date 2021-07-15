@@ -13,6 +13,18 @@
         "console": "integratedTerminal",
         "internalConsoleOptions": "neverOpen",
         "port": 9229
+      },
+      {
+        "name": "Current TS Mocha File",
+        "type": "node",
+        "request": "launch",
+        "program": "${workspaceRoot}/node_modules/mocha/bin/_mocha",
+        "args": ["${file}"],
+        "cwd": "${workspaceRoot}/src",
+        "protocol": "inspector",
+        "env": {
+          "TS_NODE_FILES": "true" //otherwise ts-node (for mocha tests) does not load the d.ts files, see https://github.com/TypeStrong/ts-node#help-my-types-are-missing
+        }
       }
     ]
 }

@@ -6,6 +6,10 @@
 
 ### My stuff ###
 secret
+/.tscache/
+/dist/
+/node_modules/
+
 
 ### Node ###
 # Logs

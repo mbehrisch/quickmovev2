@@ -1,5 +1,5 @@
 /*!
-Copyright 2013-2021 Brummolix (new version AutoarchiveReloaded, https://github.com/Brummolix/AutoarchiveReloaded )
+Copyright 2013-2019 Brummolix (new version AutoarchiveReloaded, https://github.com/Brummolix/AutoarchiveReloaded )
 Copyright 2012 Alexey Egorov (original version Autoarchive, http://code.google.com/p/autoarchive/ )
 
  This file is part of AutoarchiveReloaded.
@@ -19,26 +19,28 @@ Copyright 2012 Alexey Egorov (original version Autoarchive, http://code.google.c
 */
 
 export class AccountIterator {
-	public static async forEachAccount(forEachDo: (account: MailAccount, isAccountArchivable: boolean) => Promise<void> | void): Promise<void> {
-		const accounts: MailAccount[] = await browser.accounts.list();
-		for (const account of accounts) {
-			await forEachDo(account, this.isAccountArchivable(account));
-		}
-	}
+    public static async forEachAccount(
+        forEachDo: (account: MailAccount, isAccountArchivable: boolean) => Promise<void> | void,
+    ): Promise<void> {
+        const accounts: MailAccount[] = await browser.accounts.list();
+        for (const account of accounts) {
+            await forEachDo(account, this.isAccountArchivable(account));
+        }
+    }
 
-	private static isAccountArchivable(account: MailAccount): boolean {
-		//TODO: Is there still an exquilla type?
+    private static isAccountArchivable(account: MailAccount): boolean {
+        //TODO: Is there still an exquilla type?
 
-		//IRC accounts will not be listed... and we would ignore them anyhow
-		//"nntp" is a newsgroup account, "rss" a newsfeed account > we archive them, too (even if an rss account does not have real archive settings)
-		//a local folder is "none"
-		return (
-			account.type === "pop3" ||
-			account.type === "imap" ||
-			account.type === "rss" ||
-			account.type === "nntp" ||
-			account.type === "exquilla" ||
-			account.type === "none"
-		);
-	}
+        //IRC accounts will not be listed... and we would ignore them anyhow
+        //"nntp" is a newsgroup account, "rss" a newsfeed account > we archive them, too (even if an rss account does not have real archive settings)
+        //a local folder is "none"
+        return (
+            account.type === 'pop3' ||
+            account.type === 'imap' ||
+            account.type === 'rss' ||
+            account.type === 'nntp' ||
+            account.type === 'exquilla' ||
+            account.type === 'none'
+        );
+    }
 }

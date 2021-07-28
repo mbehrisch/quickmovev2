@@ -1,5 +1,5 @@
 /*!
-Copyright 2013-2021 Brummolix (new version AutoarchiveReloaded, https://github.com/Brummolix/AutoarchiveReloaded )
+Copyright 2013-2019 Brummolix (new version AutoarchiveReloaded, https://github.com/Brummolix/AutoarchiveReloaded )
 Copyright 2012 Alexey Egorov (original version Autoarchive, http://code.google.com/p/autoarchive/ )
 
  This file is part of AutoarchiveReloaded.
@@ -18,9 +18,9 @@ Copyright 2012 Alexey Egorov (original version Autoarchive, http://code.google.c
     along with AutoarchiveReloaded.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import { AccountInfo, AccountSettings } from "../sharedWebextension/interfaces";
+import { AccountInfo, AccountSettings } from '../sharedAll/interfaces';
 
 export interface AccountInfos {
-	account: AccountInfo;
-	accountSetting: AccountSettings;
+    account: AccountInfo;
+    accountSetting: AccountSettings;
 }

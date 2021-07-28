@@ -1,0 +1,55 @@
+[
+	{
+		"namespace": "quickmove",
+		"functions": [
+			{
+				"name": "sayHello",
+				"type": "function",
+				"description": "Says hello to the user.",
+				"async": true,
+				"parameters": [
+					{
+						"name": "name",
+						"type": "string",
+						"description": "Who to say hello to."
+					}
+				]
+			},
+			{
+				"name": "setupMultiSuffixTree",
+				"type": "function",
+				"description": "Sets up a MultiSuffixTree with for indexing.",
+				"async": true,
+				"parameters": [
+					{
+						"name": "mailFolderNames",
+						"type": "any",
+						"description": "Who to say hello to."
+					},
+					{
+						"name": "mailFolders",
+						"type": "any",
+						"description": "Who to say hello to."
+					}
+				],
+				"returns": {
+					"type": "any",
+					"optional": false,
+					"isInstanceOf": "MultiSuffixTree",
+					"additionalProperties": { "type": "any" }
+				}
+			},
+			{
+				"name": "setInfoLogging",
+				"type": "function",
+				"async": true,
+				"parameters": [
+					{
+						"name": "value",
+						"type": "boolean"
+					}
+				]
+			}
+		]
+	}
+]

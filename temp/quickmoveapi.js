@@ -305,59 +305,53 @@
 // export default {
 
 // }
-import InMemoryMailFolderRepository from "./frameworks/persistance/InMemory/InMemoryMailFolderRepository";
-import SetupMailFolders from "./application/use_cases/SetupMailFolders";
+import InMemoryMailFolderRepository from './frameworks/persistance/InMemory/InMemoryMailFolderRepository';
+import SetupMailFolders from './application/use_cases/SetupMailFolders';
 
 var quickmove = class extends ExtensionCommon.ExtensionAPI {
-  getAPI(context) {
-    return {
-      quickmove: {
-        async sayHello(name) {
-          // myModule.incValue();
-          Services.wm
-            .getMostRecentWindow("mail:3pane")
-            .alert(
-              "Hello " +
-                name +
-                "! I counted <" +
-                myModule.getValue() +
-                "> clicks so far."
-            );
-        },
+    getAPI(context) {
+        return {
+            quickmove: {
+                async sayHello(name) {
+                    // myModule.incValue();
+                    Services.wm
+                        .getMostRecentWindow('mail:3pane')
+                        .alert('Hello ' + name + '! I counted <' + myModule.getValue() + '> clicks so far.');
+                },
 
-        async setupMultiSuffixTree(allNames, allFolders) {
-          // console.log("setupMultiSuffixTree", allNames, allFolders);
-          // var _myThis = this;
-          // console.log(_myThis);
-          // this.suffixTree = new MultiSuffixTree(allNames, allFolders);
-          // console.log(this.suffixTree.findMatches("tufts"));
-        },
-      },
-    };
-  }
-
-  onStartup() {
-    console.log("API onStartup");
-
-    this.mailFolderRepository = new InMemoryMailFolderReposity();
-    const SetupMailFolders = SetupMailFolders(this.mailFolderRepository);
-
-    SetupMailFolders.Execute().then(
-      (response) => {
-        console.log("setup mail folders done", response);
-      },
-      (err) => {
-        next(err);
-      }
-    );
-  }
-
-  onShutdown(isAppShutdown) {
-    console.log("API onShutdown");
-
-    // this.mailFolderRepository.deleteAll();
-    if (isAppShutdown) {
-      return;
+                async setupMultiSuffixTree(allNames, allFolders) {
+                    // console.log("setupMultiSuffixTree", allNames, allFolders);
+                    // var _myThis = this;
+                    // console.log(_myThis);
+                    // this.suffixTree = new MultiSuffixTree(allNames, allFolders);
+                    // console.log(this.suffixTree.findMatches("tufts"));
+                },
+            },
+        };
     }
-  }
+
+    onStartup() {
+        console.log('API onStartup');
+
+        this.mailFolderRepository = new InMemoryMailFolderReposity();
+        const SetupMailFolders = SetupMailFolders(this.mailFolderRepository);
+
+        SetupMailFolders.Execute().then(
+            (response) => {
+                console.log('setup mail folders done', response);
+            },
+            (err) => {
+                next(err);
+            },
+        );
+    }
+
+    onShutdown(isAppShutdown) {
+        console.log('API onShutdown');
+
+        // this.mailFolderRepository.deleteAll();
+        if (isAppShutdown) {
+            return;
+        }
+    }
 };

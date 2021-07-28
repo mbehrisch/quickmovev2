@@ -1,71 +1,58 @@
 /* eslint-disable prefer-arrow/prefer-arrow-functions */
 //TODO: temporarily or permanently?
 
-/*!
-Copyright 2019-2021 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix/AutoarchiveReloaded )
+/// <reference path="../sharedAll/thunderbird.d.ts" />
 
- This file is part of AutoarchiveReloaded.
+import { GlobalStates } from '../sharedAll/GlobalStates';
+import {
+    ArchiveManuallyMessageRequest,
+    GetArchiveStatusMessageRequest,
+    GetArchiveStatusResponse,
+} from '../sharedAll/Messages';
+import { log } from '../sharedWebextension/Logger';
 
-    AutoarchiveReloaded is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+const initialize = async () => {
+    const message: GetArchiveStatusMessageRequest = { message: 'getArchiveStatus' };
+    const response: GetArchiveStatusResponse = await browser.runtime.sendMessage(message);
+    const status: GlobalStates = response.status;
 
-    AutoarchiveReloaded is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+    switch (status) {
+        case GlobalStates.UNINITIALZED: {
+            log.info('not initialized, cancel');
+            $('#text').text(browser.i18n.getMessage('waitForInit'));
+            $('#button').hide();
+            break;
+        }
+        case GlobalStates.IN_PROGRESS: {
+            log.info('busy with other archive..., cancel');
+            $('#text').text(browser.i18n.getMessage('waitForArchive'));
+            $('#button').hide();
+            break;
+        }
+        case GlobalStates.READY_FOR_WORK: {
+            log.info('user can start archiving');
+            $('#text').text(browser.i18n.getMessage('dialogStartManualText'));
+            $('#button').show();
+            break;
+        }
+    }
+};
 
-    You should have received a copy of the GNU General Public License
-    along with AutoarchiveReloaded.  If not, see <http://www.gnu.org/licenses/>.
-*/
+const onManualArchive = () => {
+    const message: ArchiveManuallyMessageRequest = { message: 'archiveManually' };
+    browser.runtime.sendMessage(message);
+    window.close();
+};
 
-import { GlobalStates } from "../sharedWebextension/GlobalStates";
-import { ArchiveManuallyMessageRequest, GetArchiveStatusMessageRequest, GetArchiveStatusResponse } from "../sharedWebextension/Messages";
-import { log } from "../sharedWebextension/LoggerWebextension";
-
-async function initialize(): Promise<void> {
-	const message: GetArchiveStatusMessageRequest = { message: "getArchiveStatus" };
-	const response: GetArchiveStatusResponse = await browser.runtime.sendMessage(message);
-	const status: GlobalStates = response.status;
-
-	switch (status) {
-		case GlobalStates.uninitialized: {
-			log.info("not initialized, cancel");
-			$("#text").text(browser.i18n.getMessage("waitForInit"));
-			$("#button").hide();
-			break;
-		}
-		case GlobalStates.inProgress: {
-			log.info("busy with other archive..., cancel");
-			$("#text").text(browser.i18n.getMessage("waitForArchive"));
-			$("#button").hide();
-			break;
-		}
-		case GlobalStates.readyForWork: {
-			log.info("user can start archiving");
-			$("#text").text(browser.i18n.getMessage("dialogStartManualText"));
-			$("#button").show();
-			break;
-		}
-	}
-}
-
-async function onManualArchive(): Promise<void> {
-	const message: ArchiveManuallyMessageRequest = { message: "archiveManually" };
-	await browser.runtime.sendMessage(message);
-	window.close();
-}
-
-async function onLoad(): Promise<void> {
-	try {
-		await initialize();
-		$("#button").click(onManualArchive);
-	} catch (e) {
-		log.errorException(e);
-		throw e;
-	}
-}
+const onLoad = async () => {
+    try {
+        await initialize();
+        $('#button').click(onManualArchive);
+    } catch (e) {
+        log.errorException(e);
+        throw e;
+    }
+};
 
 // eslint-disable-next-line @typescript-eslint/no-misused-promises
 $(onLoad);

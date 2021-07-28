@@ -1,5 +1,5 @@
 /*!
-Copyright 2018-2021 Brummolix (new version AutoarchiveReloaded, https://github.com/Brummolix/AutoarchiveReloaded )
+Copyright 2018-2019 Brummolix (new version AutoarchiveReloaded, https://github.com/Brummolix/AutoarchiveReloaded )
 
  This file is part of AutoarchiveReloaded.
 
@@ -19,70 +19,105 @@ Copyright 2018-2021 Brummolix (new version AutoarchiveReloaded, https://github.c
 
 //this is no typescript file!
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const webpackConfig = require("./webpack.config.js");
+const webpackConfig = require('./webpack.config.js');
 
 module.exports = (grunt) => {
-	const srcDir = "src/";
-	const outDir = "dist/";
-	const outDirExtracted = outDir + "/release/";
-	const outXpi = outDir + "/AutoArchiveReloaded.xpi";
+    const srcDir = 'src/';
+    const outDir = 'dist/';
+    const outDirExtracted = outDir + '/release/';
+    const outXpi = outDir + '/QuickMoveV2.xpi';
 
-	// Project configuration.
-	grunt.initConfig({
-		pkg: grunt.file.readJSON("package.json"),
+    // Project configuration.
+    grunt.initConfig({
+        pkg: grunt.file.readJSON('package.json'),
 
-		clean: [outDir],
-		copy: {
-			main: {
-				files: [
-					{ expand: true, cwd: "resources/", src: ["**"], dest: outDirExtracted },
-					{ expand: true, cwd: srcDir + "/backgroundScript/", src: ["**", "!**/*.ts", "!**/tsconfig*.json"], dest: outDirExtracted },
-					{ expand: true, cwd: srcDir + "/options/", src: ["**", "!**/*.ts", "!**/tsconfig*.json"], dest: outDirExtracted },
-					{ expand: true, cwd: srcDir + "/popup/", src: ["**", "!**/*.ts", "!**/tsconfig*.json"], dest: outDirExtracted },
-					{ expand: true, src: ["./licence.txt", "./README.md"], dest: outDirExtracted },
-				],
-			},
-		},
-		mochaTest: {
-			test: {
-				options: {
-					reporter: "spec",
-				},
-				src: ["./dist/test.js"],
-			},
-		},
-		webpack: {
-			myConfig: webpackConfig,
-		},
-		// make a zipfile
-		compress: {
-			main: {
-				options: {
-					archive: outXpi,
-					mode: "zip",
-				},
-				files: [
-					{ expand: true, cwd: outDirExtracted, src: ["**"], dest: "/" }, // makes all src relative to cwd
-				],
-			},
-		},
-		eslint: {
-			target: [srcDir + "/**/*.ts", srcDir + "/**/*.js", "!src/**/libs/**/*.js"],
-		},
-	});
+        clean: [outDir],
+        copy: {
+            main: {
+                files: [
+                    { expand: true, cwd: 'resources/', src: ['**'], dest: outDirExtracted },
+                    {
+                        expand: true,
+                        cwd: srcDir + '/backgroundScript/',
+                        src: ['**', '!**/*.ts', '!**/tsconfig*.json'],
+                        dest: outDirExtracted,
+                    },
+                    {
+                        expand: true,
+                        cwd: srcDir + '/options/',
+                        src: ['**', '!**/*.ts', '!**/tsconfig*.json'],
+                        dest: outDirExtracted,
+                    },
+                    {
+                        expand: true,
+                        cwd: srcDir + '/webexperiment/',
+                        src: ['**', '!**/*.ts', '!**/tsconfig*.json'],
+                        dest: outDirExtracted,
+                    },
+                    {
+                        expand: true,
+                        cwd: srcDir + '/popup/',
+                        src: ['**', '!**/*.ts', '!**/tsconfig*.json'],
+                        dest: outDirExtracted,
+                    },
+                    { expand: true, src: ['./licence.txt', './README.md'], dest: outDirExtracted },
+                ],
+            },
+        },
+        ts: {
+            debug: {
+                tsconfig: './tsconfig.json',
+            },
+            release: {
+                tsconfig: './tsconfig.release.json',
+            },
+        },
+        mochaTest: {
+            test: {
+                options: {
+                    reporter: 'spec',
+                },
+                src: ['./dist/compile/**/*.test.js'],
+            },
+        },
+        webpack: {
+            myConfig: webpackConfig,
+        },
+        // make a zipfile
+        compress: {
+            main: {
+                options: {
+                    archive: outXpi,
+                    mode: 'zip',
+                },
+                files: [
+                    { expand: true, cwd: outDirExtracted, src: ['**'], dest: '/' }, // makes all src relative to cwd
+                ],
+            },
+        },
+        eslint: {
+            // options: {
+            //     configFile: './.eslintrc.js',
+            //     rulePaths: [''],
+            // },
+            target: [srcDir + '/**/*.ts', srcDir + '/**/*.js', '!src/**/libs/**/*.js'],
+        },
+    });
 
-	grunt.loadNpmTasks("grunt-contrib-copy");
-	grunt.loadNpmTasks("grunt-contrib-clean");
-	grunt.loadNpmTasks("grunt-contrib-compress");
-	grunt.loadNpmTasks("grunt-webpack");
-	grunt.loadNpmTasks("grunt-eslint");
-	grunt.loadNpmTasks("grunt-mocha-test");
+    grunt.loadNpmTasks('grunt-contrib-copy');
+    grunt.loadNpmTasks('grunt-contrib-clean');
+    grunt.loadNpmTasks('grunt-ts');
+    grunt.loadNpmTasks('grunt-contrib-compress');
+    grunt.loadNpmTasks('grunt-webpack');
+    grunt.loadNpmTasks('grunt-eslint');
+    grunt.loadNpmTasks('grunt-mocha-test');
 
-	//tasks
-	grunt.registerTask("default", ["clean", "copy", "webpack", "compress", "mochaTest", "eslint"]);
+    grunt.registerTask('lint', ['eslint']);
+
+    // Default task(s).
+    grunt.registerTask('default', ['clean', 'copy', 'ts:debug', 'webpack', 'compress', 'mochaTest', 'eslint']);
+
+    grunt.registerTask('release', ['clean', 'copy', 'ts:release', 'webpack', 'compress', 'mochaTest', 'eslint']);
 };

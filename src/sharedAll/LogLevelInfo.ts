@@ -1,5 +1,5 @@
 /*!
-Copyright 2020-2021 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix/AutoarchiveReloaded )
+Copyright 2019 Brummolix (new version AutoarchiveReloaded, https://github.com/Brummolix/AutoarchiveReloaded )
 
  This file is part of AutoarchiveReloaded.
 
@@ -16,9 +16,6 @@ Copyright 2020-2021 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix
     You should have received a copy of the GNU General Public License
     along with AutoarchiveReloaded.  If not, see <http://www.gnu.org/licenses/>.
 */
-
-export enum GlobalStates {
-	uninitialized,
-	readyForWork,
-	inProgress,
+export interface LogLevelInfo {
+    enableInfoLogging: boolean;
 }

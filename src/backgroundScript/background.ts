@@ -1,5 +1,5 @@
 /*!
-Copyright 2019-2021 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix/AutoarchiveReloaded )
+Copyright 2019 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix/AutoarchiveReloaded )
 
  This file is part of AutoarchiveReloaded.
 
@@ -18,57 +18,43 @@ Copyright 2019-2021 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix
 */
 
 /* eslint-disable prefer-arrow/prefer-arrow-functions */
-import { ArchiveManuallyMessageRequest, GetArchiveStatusMessageRequest } from "../sharedWebextension/Messages";
-import { log } from "../sharedWebextension/LoggerWebextension";
-import { OptionHelper } from "../sharedWebextension/optionHelper";
-import { MainFunctions } from "./MainFunctions";
+import { ArchiveManuallyMessageRequest, GetArchiveStatusMessageRequest } from '../sharedAll/Messages';
+import { log } from '../sharedWebextension/Logger';
+import { OptionHelper } from '../sharedWebextension/optionHelper';
+import { MainFunctions } from './MainFunctions';
 
-/**
- * the main startup function of the background script
- */
-async function startup(): Promise<void> {
-	try {
-		log.info("Autoarchive background script started");
+const startup = async () => {
+    try {
+        log.info('Autoarchive background script started');
 
-		const optionHelper: OptionHelper = new OptionHelper();
-		await optionHelper.initializePreferencesAtStartup();
-		await MainFunctions.startupAndInitialzeAutomaticArchiving();
-		browser.runtime.onMessage.addListener(handleMessage);
-	} catch (e) {
-		log.errorException(e);
-		throw e;
-	}
-}
+        const optionHelper: OptionHelper = new OptionHelper();
+        await optionHelper.initializePreferencesAtStartup();
+        await MainFunctions.startupAndInitialzeAutomaticArchiving();
+        browser.runtime.onMessage.addListener(handleMessage);
+    } catch (e) {
+        log.errorException(e);
+        throw e;
+    }
+};
 
-/**
- * receive messages (commands) from the popup
- *
- * @param request - the data of the message
- * @param sender the sender
- * @param sendResponse the function to receive the response
- */
-function handleMessage(
-	request: ArchiveManuallyMessageRequest | GetArchiveStatusMessageRequest,
-	sender: RuntimeMessageSender,
-	sendResponse: RuntimeMessageResponseFunction
-): void {
-	switch (request.message) {
-		case "getArchiveStatus": {
-			log.info("background script getArchiveStatus");
-			sendResponse({ status: MainFunctions.getStatus() });
-			break;
-		}
-		case "archiveManually": {
-			log.info("user choosed to archive manually");
+const handleMessage = (
+    request: ArchiveManuallyMessageRequest | GetArchiveStatusMessageRequest,
+    sender: RuntimeMessageSender,
+    sendResponse: RuntimeMessageResponseFunction,
+) => {
+    switch (request.message) {
+        case 'getArchiveStatus': {
+            log.info('background script getArchiveStatus');
+            sendResponse({ status: MainFunctions.getStatus() });
+            break;
+        }
+        case 'archiveManually': {
+            log.info('user choosed to archive manually');
+            MainFunctions.onArchiveManually(); //without await...
+            sendResponse(null);
+            break;
+        }
+    }
+};
 
-			// handleMessage does not work with async functions and it is OK to send the response immediately without waiting...
-			// eslint-disable-next-line @typescript-eslint/no-floating-promises
-			MainFunctions.onArchiveManually();
-			sendResponse(null);
-			break;
-		}
-	}
-}
-
-// eslint-disable-next-line @typescript-eslint/no-floating-promises -- global await is not possible but it works as nothing comes after this function...
 startup();

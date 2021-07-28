@@ -1,5 +1,5 @@
 /*!
-Copyright 2018-2021 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix/AutoarchiveReloaded )
+Copyright 2018-2019 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix/AutoarchiveReloaded )
 
  This file is part of AutoarchiveReloaded.
 
@@ -17,72 +17,76 @@ Copyright 2018-2021 Brummolix (AutoarchiveReloaded, https://github.com/Brummolix
     along with AutoarchiveReloaded.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import { AccountSettings, GlobalSettings, Settings } from "./interfaces";
+import { AccountSettings, GlobalSettings, Settings } from '../sharedAll/interfaces';
 
 export class DefaultSettings {
-	public getDefaultAccountSettings(): AccountSettings {
-		return {
-			bArchiveOther: false,
-			daysOther: 360,
-			bArchiveMarked: false,
-			daysMarked: 360,
-			bArchiveTagged: false,
-			daysTagged: 360,
-			bArchiveUnread: false,
-			daysUnread: 360,
-		};
-	}
+    public getDefaultAccountSettings(): AccountSettings {
+        return {
+            bArchiveOther: false,
+            daysOther: 360,
+            bArchiveMarked: false,
+            daysMarked: 360,
+            bArchiveTagged: false,
+            daysTagged: 360,
+            bArchiveUnread: false,
+            daysUnread: 360,
+        };
+    }
 
-	public convertPartialSettings(partialSettings: { [key: string]: unknown }): Settings {
-		const defaultSettings: Settings = this.getDefaultSettings();
-		const concatedSettings: Settings = this.deepMerge(defaultSettings, partialSettings);
+    public convertPartialSettings(partialSettings: { [key: string]: any }): Settings {
+        const defaultSettings: Settings = this.getDefaultSettings();
+        const concatedSettings: Settings = this.deepMerge(defaultSettings, partialSettings);
 
-		//use defaultSettings for all accounts, too
-		for (const accountId in concatedSettings.accountSettings) {
-			if (concatedSettings.accountSettings.hasOwnProperty(accountId)) {
-				const accountSetting = concatedSettings.accountSettings[accountId];
-				concatedSettings.accountSettings[accountId] = this.deepMerge(this.getDefaultAccountSettings(), accountSetting);
-			}
-		}
+        //use defaultSettings for all accounts, too
+        for (const accountId in concatedSettings.accountSettings) {
+            if (concatedSettings.accountSettings.hasOwnProperty(accountId)) {
+                const accountSetting = concatedSettings.accountSettings[accountId];
+                concatedSettings.accountSettings[accountId] = this.deepMerge(
+                    this.getDefaultAccountSettings(),
+                    accountSetting,
+                );
+            }
+        }
 
-		return concatedSettings;
-	}
+        return concatedSettings;
+    }
 
-	private deepMerge<T extends Record<string, any>>(defaultValues: T, valuesToMerge: Record<string, any>): T {
+    /* eslint-disable */
+	private deepMerge<T extends { [key: string]: any }>(defaultValues: T, valuesToMerge: { [key: string]: any }): T {
 		if (valuesToMerge === undefined || valuesToMerge === null) {
 			return defaultValues;
 		}
 
-		const clone: Record<string, any> = Object.assign({}, defaultValues);
+		const clone: any = Object.assign({}, defaultValues);
 		for (const key in valuesToMerge) {
 			if (valuesToMerge.hasOwnProperty(key)) {
-				const elem: Record<string, any> = valuesToMerge[key] as Record<string, any>;
+				const elem: any = valuesToMerge[key];
 				if (elem !== undefined && elem !== null) {
 					//do not use Object.keys here, as TB 64 gives keys also for strings and even numbers
 					if (typeof elem !== "object") {
 						clone[key] = elem;
 					} else {
-						// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 						clone[key] = this.deepMerge(clone[key], elem);
 					}
 				}
 			}
 		}
 
-		return clone as T;
+		return clone;
 	}
+	/* eslint-enable */
 
-	private getDefaultSettings(): Settings {
-		return {
-			globalSettings: this.getDefaultGlobalSettings(),
-			accountSettings: {},
-		};
-	}
+    private getDefaultSettings(): Settings {
+        return {
+            globalSettings: this.getDefaultGlobalSettings(),
+            accountSettings: {},
+        };
+    }
 
-	private getDefaultGlobalSettings(): GlobalSettings {
-		return {
-			archiveType: "manual",
-			enableInfoLogging: false,
-		};
-	}
+    private getDefaultGlobalSettings(): GlobalSettings {
+        return {
+            archiveType: 'manual',
+            enableInfoLogging: false,
+        };
+    }
 }

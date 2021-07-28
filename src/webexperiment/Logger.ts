@@ -1,5 +1,6 @@
 /*!
-Copyright 2019-2021 Brummolix (new version AutoarchiveReloaded, https://github.com/Brummolix/AutoarchiveReloaded )
+Copyright 2013-2019 Brummolix (new version AutoarchiveReloaded, https://github.com/Brummolix/AutoarchiveReloaded )
+Copyright 2012 Alexey Egorov (original version Autoarchive, http://code.google.com/p/autoarchive/ )
 
  This file is part of AutoarchiveReloaded.
 
@@ -16,6 +17,17 @@ Copyright 2019-2021 Brummolix (new version AutoarchiveReloaded, https://github.c
     You should have received a copy of the GNU General Public License
     along with AutoarchiveReloaded.  If not, see <http://www.gnu.org/licenses/>.
 */
-export interface LogLevelInfo {
-	enableInfoLogging: boolean;
+
+import { LogLevelInfo } from '../sharedAll/LogLevelInfo';
+import { Logger } from '../sharedAll/Logger';
+
+class LogLevelInfoWebexperiment implements LogLevelInfo {
+    public enableInfoLogging = false;
+
+    public log(value: any): void {
+        console.log(value);
+    }
 }
+
+export const logLevelInfo: LogLevelInfoWebexperiment = new LogLevelInfoWebexperiment();
+export const log: Logger = new Logger(logLevelInfo);
